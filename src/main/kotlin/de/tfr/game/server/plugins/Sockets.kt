@@ -1,6 +1,7 @@
 package de.tfr.game.server.plugins
 
 import de.tfr.game.server.PlayerConnection
+import de.tfr.game.server.ScoreCounter
 import de.tfr.kojamatch.game.network.*
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
@@ -34,7 +35,7 @@ fun Application.configureSockets() {
   suspend fun WebSocketSession.send(packet: Packet) = this.send(json.encodeToString(packet))
   suspend fun WebSocketSession.send(event: GameEvent) = this.send(event.packed())
   suspend fun WebSocketSession.send(playerPos: PlayerPos) = this.send(playerPos.toPacket())
-  suspend fun broadCast(event: GameEvent) = playerConnections.forEach { it.value.session.send(event) }
+  suspend fun broadCast(event: GameEvent) = playerConnections.asSequence().forEach { it.value.session.send(event) }
 
   routing {
     webSocket("/game") {
@@ -43,7 +44,7 @@ fun Application.configureSockets() {
       playerConnections[playerID] = playerConnection
       println("Added player connection: $playerConnection")
       try {
-        send(ConnectedEvent(playerID))
+        send(ConnectedEvent(playerID, ScoreCounter.get()))
         send(MultiplayerEvent(listPlayers(playerConnection)))
 
         for (frame in incoming) {
@@ -64,6 +65,11 @@ fun Application.configureSockets() {
                   listPlayerConnectionsExcept(playerConnection).forEach {
                     it.session.send(event.pos)
                   }
+                }
+
+                is NewCardEvent ->{
+                  broadCast(NewScoreEvent(ScoreCounter.count(),packet.clientEvent.pos ))
+                  log.debug("Broadcasting new score ${ScoreCounter.get()}")
                 }
                 else -> {
                   log.debug("Ignoring event ${packet.clientEvent}")

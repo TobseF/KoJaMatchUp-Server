@@ -47,8 +47,10 @@ data class PlayerGoneEvent(
 @Serializable
 @SerialName("Con")
 data class ConnectedEvent(
-  override val playerId: Int = -1
+  override val playerId: Int = -1,
+  val score: Int = -1
 ) : GameEvent(), Named
+
 
 @Serializable
 @SerialName("EPos")
@@ -59,5 +61,12 @@ data class NewPositionEvent(
 @Serializable
 @SerialName("ECard")
 data class NewCardEvent(
+  val pos: PlayerPos
+) : GameEvent()
+
+@Serializable
+@SerialName("NScore")
+data class NewScoreEvent(
+  val score: Int,
   val pos: PlayerPos
 ) : GameEvent()

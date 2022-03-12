@@ -25,7 +25,7 @@ repositories {
   mavenCentral()
 }
 
-val image = "tobsef/kojamatchup-server:test"
+val image = "tobsef/kojamatchup-server:0.0.2"
 
 jib {
   // Task which creates and uploads the docker image

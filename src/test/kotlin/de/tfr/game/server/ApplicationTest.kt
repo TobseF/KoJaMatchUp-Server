@@ -12,7 +12,7 @@ class ApplicationTest {
     withTestApplication({ configureRouting() }) {
       handleRequest(HttpMethod.Get, "/").apply {
         assertEquals(HttpStatusCode.OK, response.status())
-        assertEquals("Hello World!", response.content)
+        assertEquals("KoJa Match Up Game Server ", response.content)
       }
     }
   }

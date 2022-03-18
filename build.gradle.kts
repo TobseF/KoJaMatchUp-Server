@@ -1,3 +1,6 @@
+group = "de.tfr.game.server"
+version = "0.0.3"
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -6,16 +9,17 @@ val main_class = "de.tfr.game.server.ApplicationKt"
 
 project.setProperty("mainClassName", main_class)
 
+val dockerHubPassword = project.findProperty("dockerHubPassword") as String?
+val dockerHubUsername = project.findProperty("dockerHubUsername") as String?
+
 plugins {
   application
   kotlin("jvm") version "1.6.10"
   kotlin("plugin.serialization") version "1.6.10"
-  id("com.google.cloud.tools.jib") version "2.7.1"
+  id("com.google.cloud.tools.jib") version "3.2.0"
   `maven-publish`
 }
 
-group = "de.tfr.game.server"
-version = "0.0.1"
 application {
   mainClass.set(main_class)
 }
@@ -25,11 +29,16 @@ repositories {
   mavenCentral()
 }
 
-val image = "tobsef/kojamatchup-server:0.0.2"
-
 jib {
   // Task which creates and uploads the docker image
-  to.image = image
+  to {
+    image = "tobsef/kojamatchup-server"
+    tags = setOf(version as String)
+  }
+  to.auth {
+    username = System.getenv("DOCKER_HUB_USERNAME")
+    password = System.getenv("DOCKER_HUB_PASSWORD")
+  }
   container {
     ports = listOf("8080")
     mainClass = main_class
@@ -44,8 +53,11 @@ jib {
       "-XX:MaxGCPauseMillis=100",
       "-XX:+UseStringDeduplication"
     )
+    environment = mapOf("appVersion" to version as String)
+
   }
 }
+
 
 dependencies {
   implementation("io.ktor:ktor-server-core:$ktor_version")

@@ -19,7 +19,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: ./gradlew jib
-      - uses: caprover/cli-caprover:v2.1.1
+      - uses: caprover/cli-caprover:2.2.3
       - name: Deploy to Caprover
         run: ./caprover deploy --caproverUrl ${{ secrets.CAPROVER_URL }} --caproverPassword ${{ secrets.CAPROVER_PASSWORD }} --caproverApp match-up-server --imageName tobsef/kojamatchup-server:latest
       - name: Archive test report

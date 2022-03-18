@@ -1,5 +1,5 @@
 group = "de.tfr.game.server"
-version = "0.0.3"
+version = "0.0.4"
 
 val ktor_version: String by project
 val kotlin_version: String by project

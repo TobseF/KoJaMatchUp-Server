@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [master]
+    branches: [master, caprover-ci]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,11 +14,14 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: gradle
-      - name: Build with Gradle
+      - name: Build and push Image to Docker Hub
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: ./gradlew jib
+      - name: Deploy to Caprover
+        uses: caprover/cli-caprover:v2.1.1
+        run: ./caprover deploy --caproverUrl ${{ secrets.CAPROVER_URL }} --caproverPassword ${{ secrets.CAPROVER_PASSWORD }} --caproverApp match-up-server --imageName tobsef/kojamatchup-server:latest
       - name: Archive test report
         uses: actions/upload-artifact@v2
         with:

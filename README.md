@@ -18,6 +18,12 @@ The server is available at Docker Hub:
 You can build the image by your own:  
 Run Gradle: `Server -> Tasks -> jib -> jibDockerBuild`
 
+### 🤖 GitHub-CI
+The GitHub CI is configured to build the Docker image with [jib](https://github.com/GoogleContainerTools/jib) and 
+to push it to the [Docker Hub Repo](https://hub.docker.com/repository/docker/tobsef/kojamatchup-server). 
+It uses the `version` number as tag, in addition to the `release` tag.
+Credentials are provided by environment variables which are stored in the environment named `CI`.
+
 ### Resources
 
 Server is based on the [KorgeMultiplayerDemo](https://github.com/Kietyo/KorgeMultiplayerDemo)

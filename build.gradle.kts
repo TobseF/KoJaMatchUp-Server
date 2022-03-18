@@ -9,9 +9,6 @@ val main_class = "de.tfr.game.server.ApplicationKt"
 
 project.setProperty("mainClassName", main_class)
 
-val dockerHubPassword = project.findProperty("dockerHubPassword") as String?
-val dockerHubUsername = project.findProperty("dockerHubUsername") as String?
-
 plugins {
   application
   kotlin("jvm") version "1.6.10"
@@ -54,7 +51,6 @@ jib {
       "-XX:+UseStringDeduplication"
     )
     environment = mapOf("appVersion" to version as String)
-
   }
 }
 
